@@ -36,7 +36,7 @@ When you sign up for an account, {% data variables.product.product_name %} provi
 
 ### Setting a profile picture
 
-{% data reusables.user_settings.access_settings %}
+{% data reusables.user-settings.access_settings %}
 2. Under **Profile Picture**, click {% octicon "pencil" aria-label="The edit icon" %} **Edit**.
 ![Edit profile picture](/assets/images/help/profile/edit-profile-photo.png)
 3. Click **Upload a photo...**.
@@ -46,7 +46,7 @@ When you sign up for an account, {% data variables.product.product_name %} provi
 
 ### Resetting your profile picture to the identicon
 
-{% data reusables.user_settings.access_settings %}
+{% data reusables.user-settings.access_settings %}
 2. Under **Profile Picture**, click {% octicon "pencil" aria-label="The edit icon" %} **Edit**.
 ![Edit profile picture](/assets/images/help/profile/edit-profile-photo.png)
 3. To revert to your identicon, click **Remove photo**. If your email address is associated with a [Gravatar](https://en.gravatar.com/), you cannot revert to your identicon. Click **Revert to Gravatar** instead.
@@ -64,7 +64,7 @@ You can change the name that is displayed on your profile. This name may also be
 {% endnote %}
 {% endif %}
 
-{% data reusables.user_settings.access_settings %}
+{% data reusables.user-settings.access_settings %}
 2. Under "Name", type the name you want to be displayed on your profile.
   ![Name field in profile settings](/assets/images/help/profile/name-field.png)
 
@@ -85,7 +85,7 @@ For a longer-form and more prominent way of displaying customized information ab
 
 {% endnote %}
 
-{% data reusables.user_settings.access_settings %}
+{% data reusables.user-settings.access_settings %}
 2. Under **Bio**, add the content that you want displayed on your profile. The bio field is limited to 160 characters.
 	![Update bio on profile](/assets/images/help/profile/bio-field.png)
 
@@ -143,15 +143,17 @@ When you participate in certain programs, {% data variables.product.prodname_dot
 | {% octicon "star-fill" aria-label="The star icon" %} | **Pro** | If you use {% data variables.product.prodname_pro %} you'll get a PRO badge on your profile. For more information about {% data variables.product.prodname_pro %}, see "[{% data variables.product.prodname_dotcom %}'s products](/github/getting-started-with-github/githubs-products#github-pro)." |
 | {% octicon "lock" aria-label="The lock icon" %} | **Security Bug Bounty Hunter** | If you helped out hunting down security vulnerabilities, you'll get a Security Bug Bounty Hunter badge on your profile. For more information about the {% data variables.product.prodname_dotcom %} Security program, see [{% data variables.product.prodname_dotcom %} Security](https://bounty.github.com/). |
 | {% octicon "mortar-board" aria-label="The mortar-board icon" %} | **{% data variables.product.prodname_dotcom %} Campus Expert** | If you participate in the {% data variables.product.prodname_campus_program %}, you will get a {% data variables.product.prodname_dotcom %} Campus Expert badge on your profile. For more information about the Campus Experts program, see [Campus Experts](https://education.github.com/experts). |
+| {% octicon "shield" aria-label="The shield icon" %} | **Security advisory credit** | If a security advisory you submit to the [{% data variables.product.prodname_dotcom %} Advisory Database](https://github.com/advisories) is accepted, you'll get a Security advisory credit badge on your profile. For more information about {% data variables.product.prodname_dotcom %} Security Advisories, see [{% data variables.product.prodname_dotcom %} Security Advisories](/code-security/repository-security-advisories/about-github-security-advisories-for-repositories). |
+| {% octicon "check" aria-label="The check icon" %} | **Discussion answered** | If your reply to a discussion is marked as the answer, you'll get a Discussion answered badge on your profile. For more information about {% data variables.product.prodname_dotcom %} Discussions, see [About discussions](/discussions/collaborating-with-your-community-using-discussions/about-discussions). |
 
 ## Disabling badges on your profile
 
 You can disable some of the badges for {% data variables.product.prodname_dotcom %} programs you're participating in, including the PRO, {% data variables.product.prodname_arctic_vault %} and Mars 2020 Helicopter Contributor badges.
 
-{% data reusables.user_settings.access_settings %}
+{% data reusables.user-settings.access_settings %}
 2. Under "Profile settings", deselect the badge you want you disable.
   ![Checkbox to no longer display a badge on your profile](/assets/images/help/profile/profile-badge-settings.png)
-3. Click **Update preferences**.
+{% data reusables.user-settings.update-preferences %}
 
 {% endif %}
 

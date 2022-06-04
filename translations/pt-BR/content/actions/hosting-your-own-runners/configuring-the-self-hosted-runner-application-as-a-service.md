@@ -13,7 +13,6 @@ defaultPlatform: linux
 shortTitle: Executar o executor ao iniciar
 ---
 
-{% data reusables.actions.ae-self-hosted-runners-notice %}
 {% data reusables.actions.enterprise-beta %}
 {% data reusables.actions.enterprise-github-hosted-runners %}
 
@@ -66,7 +65,14 @@ Você pode gerenciar o serviço do executor no aplicativo **Serviços** do Windo
    sudo ./svc.sh install
    ```
 
+1. Alternatively, the command takes an optional `user` argument to install the service as a different user.
+
+  ```shell
+  ./svc.sh install <em>USERNAME</em>
+  ```
+
 {% endlinux %}
+
 {% mac %}
 
 ## Instalando o serviço
