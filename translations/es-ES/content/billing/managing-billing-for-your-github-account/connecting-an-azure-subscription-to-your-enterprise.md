@@ -1,6 +1,6 @@
 ---
 title: Conectar una suscripción de Azure a tu empresa
-intro: 'Puedes utilizar tu Acuerdo de Microsoft Enterprise para habilitar y pagar por el uso de las {% data variables.product.prodname_actions %} y del {% data variables.product.prodname_registry %} más allá de las cantidades que se incluyen para tu empresa.'
+intro: 'Puedes utilizar tu Acuerdo de Microsoft Enterprise para habilitar y pagar por el uso de {% data variables.product.prodname_actions %}, del {% data variables.product.prodname_registry %} y de los {% data variables.product.prodname_codespaces %}.'
 redirect_from:
   - /github/setting-up-and-managing-your-enterprise/managing-your-enterprise-account/connecting-an-azure-subscription-to-your-enterprise
   - /github/setting-up-and-managing-billing-and-payments-on-github/connecting-an-azure-subscription-to-your-enterprise
@@ -14,7 +14,17 @@ shortTitle: Conectar una suscripción de Azure
 
 {% data reusables.enterprise-accounts.billing-microsoft-ea-overview %} Para obtener más información, consulta las secciones "[Acerca de la facturación para las {% data variables.product.prodname_actions %}](/billing/managing-billing-for-github-actions/about-billing-for-github-actions)" y "[Acerca de la facturación para el {% data variables.product.prodname_registry %}](/billing/managing-billing-for-github-packages/about-billing-for-github-packages)".
 
-Una vez que conectes una suscripción de Azure, también podrás administrar tu límite de gastos. Para obtener más información sobre cómo administrar y cambiar el límite de gastos de tu cuenta, consulta las secciones "[Administrar tu límite de gastos para el {% data variables.product.prodname_registry %}](/billing/managing-billing-for-github-packages/managing-your-spending-limit-for-github-packages)" y "[Administrar tu límite de gastos para las {% data variables.product.prodname_actions %}](/billing/managing-billing-for-github-actions/managing-your-spending-limit-for-github-actions)".
+{% note %}
+
+**Nota:** Si tu cuenta empresarial está en un Acuerdo de Microsoft Enterprise, conectar una suscripción de Azure es la única forma de utilizar {% data variables.product.prodname_actions %} y el {% data variables.product.prodname_registry %} más allá de las cantidades incluidas o para utilizar los {% data variables.product.prodname_codespaces %} en general.
+
+{% endnote %}
+
+Después de que conectes una suscripción de Azure, también podrás administrar tus límites de gastos.
+
+- "[Administrar tu límite de gastos para el {% data variables.product.prodname_registry %}](/billing/managing-billing-for-github-packages/managing-your-spending-limit-for-github-packages)"
+- "[Administrar tu límite de gastos para las {% data variables.product.prodname_actions %}](/billing/managing-billing-for-github-actions/managing-your-spending-limit-for-github-actions)"
+- "[Administrar tu límite de gastos para {% data variables.product.prodname_codespaces %}](/billing/managing-billing-for-github-codespaces/managing-spending-limits-for-codespaces)"
 
 ## Conectar tu suscripción de Azure con tu cuenta empresarial
 
@@ -31,7 +41,7 @@ Para conectar tu suscripción de Azure, debes tener permisos de propietario para
 
    {% note %}
 
-   **Note:** {% data variables.product.company_short %}'s Subscription Permission Validation requests read-only access to display the list of available subscriptions. To select an Azure subscription, you must have owner permissions to the subscription. If the default tenant does not have the right permissions, you may need to specify a different tenant ID. For more information, see [Microsoft identity platform and OAuth 2.0 authorization code flow](https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-auth-code-flow#request-an-authorization-code) in Microsoft Docs.
+   **Nota:** La validación de permisos de suscripción de {% data variables.product.company_short %} solicita acceso de solo lectura para mostrar la lista de suscripciones disponibles. Para seleccionar una suscripción de Azure, debes ser el propietario de los permisos a la suscripción. Si el inquilino predeterminado no cuenta con los permisos correctos, puede que necesites especificar una ID de inquilino diferente. Para obtener más información, consulta la [Plataforma de identidad de Microsoft y flujo de código de autorizaciones OAuth 2.0](https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-auth-code-flow#request-an-authorization-code) en los Documentos de Microsoft.
 
    {% endnote %}
 1. Da clic en **Conectar**.

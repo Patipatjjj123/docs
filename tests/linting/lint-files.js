@@ -7,7 +7,7 @@ import yaml from 'js-yaml'
 import revalidator from 'revalidator'
 import { fromMarkdown } from 'mdast-util-from-markdown'
 import { visit } from 'unist-util-visit'
-import readFileAsync from '../../lib/readfile-async.js'
+import fs from 'fs/promises'
 import frontmatter from '../../lib/frontmatter.js'
 import languages from '../../lib/languages.js'
 import { tags } from '../../lib/liquid-tags/extended-markdown.js'
@@ -25,6 +25,7 @@ import allowedVersionOperators from '../../lib/liquid-tags/ifversion-supported-o
 import semver from 'semver'
 import { jest } from '@jest/globals'
 import { getDiffFiles } from '../helpers/diff-files.js'
+import loadSiteData from '../../lib/site-data.js'
 
 jest.useFakeTimers('legacy')
 
@@ -177,6 +178,28 @@ const oldOcticonRegex = /{{\s*?octicon-([a-z-]+)(\s[\w\s\d-]+)?\s*?}}/g
 //
 const oldExtendedMarkdownRegex = /{{\s*?[#/][a-z-]+\s*?}}/g
 
+// GitHub-owned actions (e.g. actions/checkout@v2) should use a reusable in examples.
+// list:
+// - actions/checkout@v2
+// - actions/delete-package-versions@v2
+// - actions/download-artifact@v2
+// - actions/upload-artifact@v2
+// - actions/github-script@v2
+// - actions/setup-dotnet@v2
+// - actions/setup-go@v2
+// - actions/setup-java@v2
+// - actions/setup-node@v2
+// - actions/setup-python@v2
+// - actions/stale@v2
+// - actions/cache@v2
+// - github/codeql-action/init@v2
+// - github/codeql-action/analyze@v2
+// - github/codeql-action/autobuild@v2
+// - github/codeql-action/upload-sarif@v2
+//
+const literalActionInsteadOfReusableRegex =
+  /(actions\/(checkout|delete-package-versions|download-artifact|upload-artifact|github-script|setup-dotnet|setup-go|setup-java|setup-node|setup-python|stale|cache)|github\/codeql-action[/a-zA-Z-]*)@v\d+/g
+
 // Strings in Liquid will always evaluate true _because_ they are strings; instead use unquoted variables, like {% if foo %}.
 // - {% if "foo" %}
 // - {% unless "bar" %}
@@ -198,6 +221,8 @@ const oldExtendedMarkdownErrorText =
   'Found extended markdown tags with the old {{#note}} syntax. Use {% note %}/{% endnote %} instead!'
 const stringInLiquidErrorText =
   'Found Liquid conditionals that evaluate a string instead of a variable. Remove the quotes around the variable!'
+const literalActionInsteadOfReusableErrorText =
+  'Found a literal mention of a GitHub-owned action. Instead, use the reusables for the action. e.g {% data reusables.actions.action-checkout %}'
 
 const mdWalkOptions = {
   globs: ['**/*.md'],
@@ -410,6 +435,9 @@ if (
 
 describe('lint markdown content', () => {
   if (mdToLint.length < 1) return
+
+  const siteData = loadSiteData()
+
   describe.each(mdToLint)('%s', (markdownRelPath, markdownAbsPath) => {
     let content,
       ast,
@@ -425,7 +453,7 @@ describe('lint markdown content', () => {
       ifConditionals
 
     beforeAll(async () => {
-      const fileContents = await readFileAsync(markdownAbsPath, 'utf8')
+      const fileContents = await fs.readFile(markdownAbsPath, 'utf8')
       const { data, content: bodyContent, errors } = frontmatter(fileContents)
 
       content = bodyContent
@@ -453,12 +481,14 @@ describe('lint markdown content', () => {
         }
       })
 
+      const context = { site: siteData.en.site }
+
       // visit is not async-friendly so we need to do an async map to parse the YML snippets
       yamlScheduledWorkflows = (
         await Promise.all(
           yamlScheduledWorkflows.map(async (snippet) => {
             // If we don't parse the Liquid first, yaml loading chokes on {% raw %} tags
-            const rendered = await renderContent.liquid.parseAndRender(snippet)
+            const rendered = await renderContent.liquid.parseAndRender(snippet, context)
             const parsed = yaml.load(rendered)
             return parsed.on.schedule
           })
@@ -667,6 +697,14 @@ ${ifsForVersioning.join('\n')}`
         }
       })
     }
+
+    if (!markdownRelPath.includes('data/reusables/actions/action-')) {
+      test('must not contain literal GitHub-owned actions', async () => {
+        const matches = content.match(literalActionInsteadOfReusableRegex) || []
+        const errorMessage = formatLinkError(literalActionInsteadOfReusableErrorText, matches)
+        expect(matches.length, errorMessage).toBe(0)
+      })
+    }
   })
 })
 
@@ -680,7 +718,7 @@ describe('lint yaml content', () => {
     let dictionaryError = false
 
     beforeAll(async () => {
-      const fileContents = await readFileAsync(yamlAbsPath, 'utf8')
+      const fileContents = await fs.readFile(yamlAbsPath, 'utf8')
       try {
         dictionary = yaml.load(fileContents, { filename: yamlRelPath })
       } catch (error) {
@@ -917,7 +955,7 @@ describe('lint GHES release notes', () => {
     let dictionaryError = false
 
     beforeAll(async () => {
-      const fileContents = await readFileAsync(yamlAbsPath, 'utf8')
+      const fileContents = await fs.readFile(yamlAbsPath, 'utf8')
       try {
         dictionary = yaml.load(fileContents, { filename: yamlRelPath })
       } catch (error) {
@@ -973,7 +1011,7 @@ describe('lint GHAE release notes', () => {
     let dictionaryError = false
 
     beforeAll(async () => {
-      const fileContents = await readFileAsync(yamlAbsPath, 'utf8')
+      const fileContents = await fs.readFile(yamlAbsPath, 'utf8')
       try {
         dictionary = yaml.load(fileContents, { filename: yamlRelPath })
       } catch (error) {
@@ -1031,12 +1069,15 @@ describe('lint GHAE release notes', () => {
 
 describe('lint learning tracks', () => {
   if (learningTracksToLint.length < 1) return
+
+  const siteData = loadSiteData()
+
   describe.each(learningTracksToLint)('%s', (yamlRelPath, yamlAbsPath) => {
     let dictionary
     let dictionaryError = false
 
     beforeAll(async () => {
-      const fileContents = await readFileAsync(yamlAbsPath, 'utf8')
+      const fileContents = await fs.readFile(yamlAbsPath, 'utf8')
       try {
         dictionary = yaml.load(fileContents, { filename: yamlRelPath })
       } catch (error) {
@@ -1061,12 +1102,12 @@ describe('lint learning tracks', () => {
       // inside the product TOC frontmatter to see which versions the product is available in.
       const product = path.posix.basename(yamlRelPath, '.yml')
       const productTocPath = path.posix.join('content', product, 'index.md')
-      const productContents = await readFileAsync(productTocPath, 'utf8')
+      const productContents = await fs.readFile(productTocPath, 'utf8')
       const { data } = frontmatter(productContents)
       const productVersions = getApplicableVersions(data.versions, productTocPath)
 
       const featuredTracks = {}
-      const context = { enterpriseServerVersions }
+      const context = { enterpriseServerVersions, site: siteData.en.site }
 
       // For each of the product's versions, render the learning track data and look for a featured track.
       await Promise.all(
@@ -1120,7 +1161,7 @@ describe('lint feature versions', () => {
     let dictionaryError = false
 
     beforeAll(async () => {
-      const fileContents = await readFileAsync(yamlAbsPath, 'utf8')
+      const fileContents = await fs.readFile(yamlAbsPath, 'utf8')
       try {
         dictionary = yaml.load(fileContents, { filename: yamlRelPath })
       } catch (error) {
